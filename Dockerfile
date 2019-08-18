@@ -15,6 +15,18 @@ RUN set -e \
 # Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
+#
+# Caddy Builder
+#
+FROM abiosoft/caddy:builder as builder
+
+ARG version="1.0.3"
+ARG plugins="realip,expires,cache"
+
+# Process Wrapper
+RUN go get -v github.com/abiosoft/parent
+
+RUN VERSION=${version} PLUGINS=${plugins} ENABLE_TELEMETRY=false /bin/sh /usr/bin/builder.sh
 
 #
 # Webtrees Application
@@ -23,13 +35,37 @@ FROM webtrees-os as webtrees-app
 
 ENV WEBTREES_VERSION 1.7.14
 
+# Caddy Let's Encrypt Agreement
+ENV ACME_AGREE="true"
+
+# Caddy Telemetry Stats
+ENV ENABLE_TELEMETRY="false"
+
+# Install Caddy
+COPY --from=builder /install/caddy /usr/bin/caddy
+
+# Validate install
+RUN /usr/bin/caddy -version
+RUN /usr/bin/caddy -plugins
+
+COPY Caddyfile /etc/Caddyfile
+
+# Install Process Wrapper
+COPY --from=builder /go/bin/parent /bin/parent
+
 WORKDIR /srv/webtrees
-
-VOLUME /srv/webtrees/data /srv/webtrees/media
-
-EXPOSE 80
 
 RUN set -e \
     && wget https://github.com/fisharebest/webtrees/archive/$WEBTREES_VERSION.tar.gz \
     && tar -xzf $WEBTREES_VERSION.tar.gz --strip-components=1 \
-    && rm $WEBTREES_VERSION.tar.gz
+    && rm $WEBTREES_VERSION.tar.gz \
+    && cp data/index.php /tmp/
+
+RUN chown -R www-data:www-data data
+
+ADD run.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/run.sh
+
+VOLUME /srv/webtrees/data
+EXPOSE 2015
+ENTRYPOINT ["/usr/local/bin/run.sh"]

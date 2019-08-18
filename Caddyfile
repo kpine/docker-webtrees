@@ -1,10 +1,15 @@
-0.0.0.0
+:2015
 
-browse
+fastcgi / 127.0.0.1:9000 php
+
+internal /forbidden
+
+rewrite {
+  r ^/data
+  to /forbidden
+}
 
 log stdout
 errors stdout
 
-fastcgi / 127.0.0.1:9000 php
-
-on startup php-fpm7
+on startup php-fpm
