@@ -1,0 +1,10 @@
+0.0.0.0
+
+browse
+
+log stdout
+errors stdout
+
+fastcgi / 127.0.0.1:9000 php
+
+on startup php-fpm7
