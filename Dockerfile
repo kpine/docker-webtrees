@@ -21,7 +21,7 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 FROM abiosoft/caddy:builder as builder
 
 ARG version="1.0.3"
-ARG plugins="realip,expires,cache"
+ARG plugins=""
 
 # Process Wrapper
 RUN go get -v github.com/abiosoft/parent
@@ -48,8 +48,6 @@ COPY --from=builder /install/caddy /usr/bin/caddy
 RUN /usr/bin/caddy -version
 RUN /usr/bin/caddy -plugins
 
-COPY Caddyfile /etc/Caddyfile
-
 # Install Process Wrapper
 COPY --from=builder /go/bin/parent /bin/parent
 
@@ -60,11 +58,10 @@ RUN set -e \
     && tar -xzf $WEBTREES_VERSION.tar.gz --strip-components=1 \
     && rm $WEBTREES_VERSION.tar.gz \
     && cp data/index.php /tmp/
-
 RUN chown -R www-data:www-data data
 
-ADD run.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/run.sh
+COPY Caddyfile /etc/Caddyfile
+COPY run.sh /usr/local/bin/
 
 VOLUME /srv/webtrees/data
 EXPOSE 2015
