@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+
+  app:
+    image: kpine/caddy-webtrees
+    restart: always
+    ports:
+      - "2015:2015"
+    volumes:
+      - app:/srv/webtrees/data
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.4
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - backend
+    secrets:
+      - db_root_password
+      - db_name
+      - db_user
+      - db_password
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_DATABASE: /run/secrets/db_name
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+
+networks:
+  frontend:
+  backend:
+
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password
+  db_name:
+    file: ./secrets/db_name
+  db_user:
+    file: ./secrets/db_user
+  db_password:
+    file: ./secrets/db_password
