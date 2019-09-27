@@ -1,7 +1,7 @@
 #
 # PHP OS Builder
 #
-FROM php:7.3.7-fpm-alpine3.10 AS webtrees-os
+FROM php:7.3.10-fpm-alpine3.10 AS webtrees-os
 
 RUN set -e \
     && apk add --no-cache \
