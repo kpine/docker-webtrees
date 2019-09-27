@@ -1,6 +1,8 @@
 :2015
 
-fastcgi / 127.0.0.1:9000 php
+fastcgi / 127.0.0.1:9000 php {
+  env HTTPS On
+}
 
 internal /forbidden
 
