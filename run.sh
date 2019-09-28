@@ -6,4 +6,4 @@ fi
 
 chown -R www-data:www-data /srv/webtrees/data
 
-/bin/parent caddy --conf /etc/Caddyfile --log stdout --agree=$ACME_AGREE
+caddy -conf /etc/Caddyfile -log stdout -agree

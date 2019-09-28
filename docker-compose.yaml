@@ -4,6 +4,7 @@ services:
 
   app:
     build: .
+    init: true
     restart: always
     ports:
       - "2015:2015"
