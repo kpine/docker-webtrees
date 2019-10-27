@@ -1,9 +1,10 @@
+ARG PHP_VERSION=7.3
 ARG ALPINE_VERSION=3.10
 
 #
 # PHP OS Builder
 #
-FROM php:7.3.10-fpm-alpine${ALPINE_VERSION} AS webtrees-os
+FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS webtrees-os
 
 RUN set -e \
  && apk add --no-cache \
