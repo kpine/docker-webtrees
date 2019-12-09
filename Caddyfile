@@ -1,17 +1,46 @@
 :2015
+gzip
 
 fastcgi / 127.0.0.1:9000 php {
-  env HTTPS On
+  except public
+}
+
+# Static files have versions in their URLs, and can be cached indefinitely.
+expires {
+  match ^/public/ 1y
 }
 
 internal /forbidden
 
-rewrite {
-  r ^/data
+# User data is stored here by default.
+rewrite /data {
   to /forbidden
 }
 
-log stdout
+# Nothing sensitive here, but there is no need to publish it.
+rewrite /app {
+  to /forbidden
+}
+rewrite /modules {
+  to /forbidden
+}
+rewrite /resources {
+  to /forbidden
+}
+rewrite /vendor {
+  to /forbidden
+}
+
+# Rewrite all other requests onto the webtrees front-controller.
+rewrite {
+  if {path} not_starts_with /public
+  if {path} not_starts_with /forbidden
+  to /index.php
+}
+
+log / stdout {
+  except /public
+}
 errors stdout
 
 on startup php-fpm

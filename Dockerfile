@@ -1,4 +1,4 @@
-ARG PHP_VERSION=7.3
+ARG PHP_VERSION=7.4
 ARG ALPINE_VERSION=3.10
 
 #
@@ -12,8 +12,9 @@ RUN set -e \
       libjpeg-turbo-dev \
       libpng-dev \
       libxml2-dev \
- && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/ \
- && docker-php-ext-install gd pdo mysqli pdo_mysql xml
+      libzip-dev \
+ && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install gd pdo mysqli pdo_mysql xml zip
 
 # Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
@@ -25,8 +26,8 @@ FROM alpine:${ALPINE_VERSION} AS caddy-builder
 
 ARG TARGETPLATFORM
 
-ARG PLUGINS=http.cache,http.realip
-ARG VERSION=v1.0.3
+ARG PLUGINS=http.cache,http.expires,http.realip
+ARG VERSION=v1.0.4
 
 ARG CADDY_URL="https://caddyserver.com/download/$TARGETPLATFORM?version=${VERSION}&plugins=${PLUGINS}&license=personal&telemetry=off"
 
@@ -45,7 +46,7 @@ RUN curl \
 #
 FROM webtrees-os as webtrees-app
 
-ARG WEBTREES_VERSION=1.7.14
+ARG WEBTREES_VERSION=2.0.0
 
 COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
 

@@ -3,13 +3,17 @@ version: '3.7'
 services:
 
   app:
-    build: .
+    container_name: "webtrees"
+    build:
+      context: .
+      args:
+        TARGETPLATFORM: "linux/amd64"
     init: true
     restart: always
     ports:
       - "2015:2015"
     volumes:
-      - appdata:/srv/webtrees/data
+      - ~/docker/webtrees/data/webtrees:/srv/webtrees/data
     networks:
       - frontend
       - backend
@@ -17,19 +21,16 @@ services:
       - db
 
   db:
+    container_name: "webtrees-db"
     image: mariadb:10.4
     restart: always
     volumes:
-      - dbdata:/var/lib/mysql
+      - ~/docker/webtrees/data/webtrees-db:/var/lib/mysql
     networks:
       - backend
     env_file:
-      - ./secrets/mariadb.env
+      - ~/docker/webtrees/secrets/mariadb.env
 
 networks:
   frontend:
   backend:
-
-volumes:
-  appdata:
-  dbdata:
