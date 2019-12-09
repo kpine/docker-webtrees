@@ -57,9 +57,9 @@ RUN /usr/bin/caddy --plugins
 WORKDIR /srv/webtrees
 
 RUN set -e \
- && wget https://github.com/fisharebest/webtrees/archive/$WEBTREES_VERSION.tar.gz \
- && tar -xzf $WEBTREES_VERSION.tar.gz --strip-components=1 \
- && rm $WEBTREES_VERSION.tar.gz \
+ && wget -q https://github.com/fisharebest/webtrees/releases/download/$WEBTREES_VERSION/webtrees-$WEBTREES_VERSION.zip -O /tmp/webtrees.zip \
+ && unzip -d /srv -o /tmp/webtrees.zip \
+ && rm /tmp/webtrees.zip \
  && cp data/index.php /tmp/
 
 RUN chown -R www-data:www-data data
