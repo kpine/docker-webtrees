@@ -26,7 +26,7 @@ FROM alpine:${ALPINE_VERSION} AS caddy-builder
 
 ARG TARGETPLATFORM
 
-ARG PLUGINS=http.cache,http.expires,http.realip
+ARG PLUGINS=http.expires,http.realip
 ARG VERSION=v1.0.4
 
 ARG CADDY_URL="https://caddyserver.com/download/$TARGETPLATFORM?version=${VERSION}&plugins=${PLUGINS}&license=personal&telemetry=off"
