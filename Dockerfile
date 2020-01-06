@@ -1,5 +1,5 @@
 ARG PHP_VERSION=7.4
-ARG ALPINE_VERSION=3.10
+ARG ALPINE_VERSION=3.11
 
 #
 # PHP OS Builder
@@ -46,7 +46,7 @@ RUN curl \
 #
 FROM webtrees-os as webtrees-app
 
-ARG WEBTREES_VERSION=2.0.0
+ARG WEBTREES_VERSION=2.0.1
 
 COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
 
