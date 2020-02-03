@@ -13,8 +13,9 @@ RUN set -e \
       libpng-dev \
       libxml2-dev \
       libzip-dev \
+      icu-dev \
  && docker-php-ext-configure gd --with-freetype --with-jpeg \
- && docker-php-ext-install gd pdo mysqli pdo_mysql xml zip
+ && docker-php-ext-install gd intl pdo mysqli pdo_mysql xml zip
 
 # Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
