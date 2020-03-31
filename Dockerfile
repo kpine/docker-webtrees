@@ -47,7 +47,7 @@ RUN curl \
 #
 FROM webtrees-os as webtrees-app
 
-ARG WEBTREES_VERSION=2.0.2
+ARG WEBTREES_VERSION=2.0.3
 
 COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
 
