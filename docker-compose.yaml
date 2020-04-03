@@ -9,11 +9,11 @@ services:
       args:
         TARGETPLATFORM: "linux/amd64"
     init: true
-    restart: always
+    restart: unless-stopped
     ports:
       - "2015:2015"
     volumes:
-      - ~/docker/webtrees/data/webtrees:/srv/webtrees/data
+      - ./data/webtrees:/srv/webtrees/data
     networks:
       - frontend
       - backend
@@ -25,11 +25,11 @@ services:
     image: mariadb:10.4
     restart: always
     volumes:
-      - ~/docker/webtrees/data/webtrees-db:/var/lib/mysql
+      - ./data/webtrees-db:/var/lib/mysql
     networks:
       - backend
     env_file:
-      - ~/docker/webtrees/secrets/mariadb.env
+      - ./data/secrets/mariadb.env
 
 networks:
   frontend:
