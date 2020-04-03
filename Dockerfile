@@ -6,16 +6,24 @@ ARG ALPINE_VERSION=3.11
 #
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS webtrees-os
 
-RUN set -e \
- && apk add --no-cache \
-      freetype-dev \
-      libjpeg-turbo-dev \
-      libpng-dev \
+RUN set -ex \
+ && apk add --no-cache --virtual .phpize-deps \
+      $PHPIZE_DEPS \
+      icu-dev \
+      imagemagick-dev \
+      libtool \
       libxml2-dev \
       libzip-dev \
-      icu-dev \
- && docker-php-ext-configure gd --with-freetype --with-jpeg \
- && docker-php-ext-install gd intl pdo mysqli pdo_mysql xml zip
+ && docker-php-ext-install intl pdo mysqli pdo_mysql xml zip \
+ && export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
+ && pecl install imagick-3.4.4 \
+ && docker-php-ext-enable imagick \
+ && apk add --no-cache --virtual .php-runtime-deps \
+      icu-libs \
+      libzip \
+      libxml2 \
+      imagemagick \
+ && apk del .phpize-deps
 
 # Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
