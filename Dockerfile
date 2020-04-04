@@ -6,15 +6,19 @@ ARG ALPINE_VERSION=3.11
 #
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS webtrees-os
 
-RUN set -ex \
+RUN set -e \
  && apk add --no-cache --virtual .phpize-deps \
       $PHPIZE_DEPS \
+      freetype-dev \
       icu-dev \
       imagemagick-dev \
+      libjpeg-turbo-dev \
+      libpng-dev \
       libtool \
       libxml2-dev \
       libzip-dev \
- && docker-php-ext-install intl pdo mysqli pdo_mysql xml zip \
+ && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install gd intl pdo mysqli pdo_mysql xml zip \
  && export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
  && pecl install imagick-3.4.4 \
  && docker-php-ext-enable imagick \
