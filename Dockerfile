@@ -45,7 +45,7 @@ ARG VERSION=v1.0.4
 ARG CADDY_URL="https://caddyserver.com/download/$TARGETPLATFORM?version=${VERSION}&plugins=${PLUGINS}&license=personal&telemetry=off"
 
 
-RUN apk add --no-cache git openssh-client tar curl
+RUN apk add --no-cache curl tar
 
 RUN curl \
         --silent --show-error --fail --location \
