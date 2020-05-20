@@ -18,7 +18,7 @@ RUN set -e \
       libxml2-dev \
       libzip-dev \
  && docker-php-ext-configure gd --with-freetype --with-jpeg \
- && docker-php-ext-install gd intl pdo mysqli pdo_mysql xml zip \
+ && docker-php-ext-install exif gd intl pdo mysqli pdo_mysql xml zip \
  && export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
  && pecl install imagick-3.4.4 \
  && docker-php-ext-enable imagick \
@@ -59,8 +59,6 @@ RUN curl \
 #
 FROM webtrees-os as webtrees-app
 
-ARG WEBTREES_VERSION=2.0.4
-
 COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
 
 # Validate install
@@ -69,6 +67,9 @@ RUN /usr/bin/caddy --plugins
 
 WORKDIR /srv/webtrees
 
+ARG WEBTREES_VERSION=2.0.4
+
+# Install webtrees
 RUN set -e \
  && wget -q https://github.com/fisharebest/webtrees/releases/download/$WEBTREES_VERSION/webtrees-$WEBTREES_VERSION.zip -O /tmp/webtrees.zip \
  && unzip -d /srv -o /tmp/webtrees.zip \
