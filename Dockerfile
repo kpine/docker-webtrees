@@ -76,6 +76,14 @@ RUN set -e \
  && rm /tmp/webtrees.zip \
  && cp data/index.php /tmp/
 
+ARG WEBTREES_FANCHART_VERSION=v2.0.3
+
+# Install webtrees fanchart module
+RUN set -e \
+ && wget -q https://github.com/magicsunday/webtrees-fan-chart/releases/download/$WEBTREES_FANCHART_VERSION/webtrees-fan-chart.zip -O /tmp/webtrees-fan-chart.zip \
+ && unzip -d /srv/webtrees/modules_v4 -o /tmp/webtrees-fan-chart.zip \
+ && rm /tmp/webtrees-fan-chart.zip
+
 RUN chown -R www-data:www-data data
 
 COPY Caddyfile /etc/Caddyfile
