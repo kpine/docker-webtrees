@@ -67,7 +67,7 @@ RUN /usr/bin/caddy --plugins
 
 WORKDIR /srv/webtrees
 
-ARG WEBTREES_VERSION=2.0.4
+ARG WEBTREES_VERSION=2.0.5
 
 # Install webtrees
 RUN set -e \
@@ -87,8 +87,8 @@ RUN set -e \
 RUN chown -R www-data:www-data data
 
 COPY Caddyfile /etc/Caddyfile
-COPY run.sh /usr/local/bin/
+COPY entrypoint.sh /usr/local/bin/
 
 VOLUME /srv/webtrees/data
 EXPOSE 2015
-ENTRYPOINT ["/usr/local/bin/run.sh"]
+ENTRYPOINT ["entrypoint.sh"]
