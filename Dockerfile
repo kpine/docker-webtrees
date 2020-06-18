@@ -67,7 +67,7 @@ RUN /usr/bin/caddy --plugins
 
 WORKDIR /srv/webtrees
 
-ARG WEBTREES_VERSION=2.0.5
+ARG WEBTREES_VERSION=2.0.6
 
 # Install webtrees
 RUN set -e \
