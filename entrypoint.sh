@@ -6,4 +6,5 @@ fi
 
 chown -R www-data:www-data /srv/webtrees/data
 
-caddy -conf /etc/Caddyfile -log stdout -agree
+php-fpm -D
+caddy run --config /etc/Caddyfile

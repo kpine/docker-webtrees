@@ -1,46 +1,16 @@
 :2015
-gzip
 
-fastcgi / 127.0.0.1:9000 php {
-  except public
-}
+encode gzip
 
-# Static files have versions in their URLs, and can be cached indefinitely.
-expires {
-  match ^/public/ 1y
-}
-
-internal /forbidden
-
-# User data is stored here by default.
-rewrite /data {
-  to /forbidden
+@forbidden {
+  path /app/*
+  path /data/*
+  path /modules/*
+  path /resources/*
+  path /vendor/*
 }
 
-# Nothing sensitive here, but there is no need to publish it.
-rewrite /app {
-  to /forbidden
-}
-rewrite /modules {
-  to /forbidden
-}
-rewrite /resources {
-  to /forbidden
-}
-rewrite /vendor {
-  to /forbidden
-}
+rewrite @forbidden /index.php
 
-# Rewrite all other requests onto the webtrees front-controller.
-rewrite {
-  if {path} not_starts_with /public
-  if {path} not_starts_with /forbidden
-  to /index.php
-}
-
-log / stdout {
-  except /public
-}
-errors stdout
-
-on startup php-fpm
+php_fastcgi 127.0.0.1:9000
+file_server /public/*

@@ -35,35 +35,14 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 #
 # Caddy Builder
 #
-FROM alpine:${ALPINE_VERSION} AS caddy-builder
-
-ARG TARGETPLATFORM
-
-ARG PLUGINS=http.expires,http.realip
-ARG VERSION=v1.0.4
-
-ARG CADDY_URL="https://caddyserver.com/download/$TARGETPLATFORM?version=${VERSION}&plugins=${PLUGINS}&license=personal&telemetry=off"
-
-
-RUN apk add --no-cache curl tar
-
-RUN curl \
-        --silent --show-error --fail --location \
-        --header "Accept: application/tar+gzip, application/x-zip, application/octet-stream" -p \
-        ${CADDY_URL} \
-  | tar --no-same-owner -C /usr/bin -xz caddy \
- && chmod 0755 /usr/bin/caddy
+FROM caddy:2.1.1-alpine AS caddy
 
 #
 # Webtrees Application
 #
-FROM webtrees-os as webtrees-app
+FROM webtrees-os AS webtrees-app
 
-COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
-
-# Validate install
-RUN /usr/bin/caddy --version
-RUN /usr/bin/caddy --plugins
+COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 
 WORKDIR /srv/webtrees
 
