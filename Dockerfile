@@ -1,33 +1,21 @@
 ARG PHP_VERSION=7.4
-ARG ALPINE_VERSION=3.12
+ARG ALPINE_VERSION=3.13
 
 #
 # PHP OS Builder
 #
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS webtrees-os
 
-RUN set -e \
- && apk add --no-cache --virtual .phpize-deps \
-      $PHPIZE_DEPS \
-      freetype-dev \
-      icu-dev \
-      imagemagick-dev \
-      libjpeg-turbo-dev \
-      libpng-dev \
-      libtool \
-      libxml2-dev \
-      libzip-dev \
- && docker-php-ext-configure gd --with-freetype --with-jpeg \
- && docker-php-ext-install exif gd intl pdo mysqli pdo_mysql xml zip \
- && export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
- && pecl install imagick-3.4.4 \
- && docker-php-ext-enable imagick \
- && apk add --no-cache --virtual .php-runtime-deps \
-      icu-libs \
-      libzip \
-      libxml2 \
-      imagemagick \
- && apk del .phpize-deps
+COPY --from=mlocati/php-extension-installer:1.2.18 /usr/bin/install-php-extensions /usr/local/bin/
+
+RUN install-php-extensions \
+      exif \
+      gd \
+      imagick \
+      intl \
+      mysqli \
+      pdo_mysql \
+      zip
 
 # Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
@@ -35,7 +23,7 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 #
 # Caddy Builder
 #
-FROM caddy:2.1.1-alpine AS caddy
+FROM caddy:2.3.0-alpine AS caddy
 
 #
 # Webtrees Application
@@ -49,7 +37,7 @@ COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 
 WORKDIR /srv/webtrees
 
-ARG WEBTREES_VERSION=2.0.10
+ARG WEBTREES_VERSION=2.0.11
 
 # Install webtrees
 RUN set -e \
@@ -58,7 +46,7 @@ RUN set -e \
  && rm /tmp/webtrees.zip \
  && cp data/index.php /tmp/
 
-ARG WEBTREES_FANCHART_VERSION=v2.0.3
+ARG WEBTREES_FANCHART_VERSION=2.1.1
 
 # Install webtrees fanchart module
 RUN set -e \
