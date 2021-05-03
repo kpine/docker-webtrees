@@ -37,7 +37,7 @@ COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 
 WORKDIR /srv/webtrees
 
-ARG WEBTREES_VERSION=2.0.15
+ARG WEBTREES_VERSION=2.0.16
 
 # Install webtrees
 RUN set -e \
