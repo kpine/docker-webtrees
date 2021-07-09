@@ -13,8 +13,8 @@ RUN install-php-extensions \
       gd \
       imagick \
       intl \
-      mysqli \
       pdo_mysql \
+      pdo_pgsql \
       zip
 
 # Use the default production configuration
