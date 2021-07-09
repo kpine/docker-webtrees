@@ -23,7 +23,7 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 #
 # Caddy Builder
 #
-FROM caddy:2.3.0-alpine AS caddy
+FROM caddy:2.4.3-alpine AS caddy
 
 #
 # Webtrees Application
