@@ -6,4 +6,4 @@ fi
 
 chown -R www-data:www-data /srv/webtrees/data
 
-exec /usr/bin/supervisord -c /etc/supervisord.conf
+exec /usr/bin/caddy run --config /etc/Caddyfile

@@ -32,9 +32,6 @@ RUN xcaddy build --with github.com/baldinof/caddy-supervisor
 #
 FROM webtrees-os AS webtrees-app
 
-RUN set -e \
- && apk add --no-cache supervisor
-
 COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 
 WORKDIR /srv/webtrees
@@ -58,7 +55,6 @@ RUN set -e \
 
 RUN chown -R www-data:www-data data
 
-COPY supervisord.conf /etc/supervisord.conf
 COPY Caddyfile /etc/Caddyfile
 COPY entrypoint.sh /usr/local/bin/
 
