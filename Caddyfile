@@ -3,11 +3,11 @@
 encode gzip
 
 @forbidden {
-  path /app/*
-  path /data/*
-  path /modules/*
-  path /resources/*
-  path /vendor/*
+	path /app/*
+	path /data/*
+	path /modules/*
+	path /resources/*
+	path /vendor/*
 }
 
 rewrite @forbidden /index.php
