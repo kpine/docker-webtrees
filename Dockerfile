@@ -38,6 +38,8 @@ WORKDIR /srv/webtrees
 
 ARG WEBTREES_VERSION=2.0.16
 
+RUN rm -f /usr/local/etc/php-fpm.d/zz-docker.conf
+
 # Install webtrees
 RUN set -e \
  && wget -q https://github.com/fisharebest/webtrees/releases/download/$WEBTREES_VERSION/webtrees-$WEBTREES_VERSION.zip -O /tmp/webtrees.zip \

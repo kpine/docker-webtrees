@@ -1,6 +1,6 @@
 {
   supervisor {
-    php-fpm
+    php-fpm -F
   }
 }
 
