@@ -6,7 +6,7 @@ ARG ALPINE_VERSION=3.13
 #
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS webtrees-os
 
-COPY --from=mlocati/php-extension-installer:1.2.40 /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=mlocati/php-extension-installer:1.2.60 /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN install-php-extensions \
       exif \
