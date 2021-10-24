@@ -47,7 +47,7 @@ RUN set -e \
  && rm /tmp/webtrees.zip \
  && cp data/index.php /tmp/
 
-ARG WEBTREES_FANCHART_VERSION=2.2.0
+ARG WEBTREES_FANCHART_VERSION=2.2.1
 
 # Install webtrees fanchart module
 RUN set -e \
