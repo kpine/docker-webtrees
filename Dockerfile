@@ -23,7 +23,7 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 #
 # Caddy Builder
 #
-FROM caddy:2.4.3-builder-alpine AS caddy
+FROM caddy:2.4.5-builder-alpine AS caddy
 
 RUN xcaddy build --with github.com/baldinof/caddy-supervisor
 
