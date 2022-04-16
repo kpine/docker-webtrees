@@ -6,7 +6,7 @@ ARG ALPINE_VERSION=3.15
 #
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS webtrees-os
 
-COPY --from=mlocati/php-extension-installer:1.4.6 /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=mlocati/php-extension-installer:1.5.8 /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN install-php-extensions \
       exif \
@@ -36,7 +36,7 @@ COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 
 WORKDIR /srv/webtrees
 
-ARG WEBTREES_VERSION=2.0.19
+ARG WEBTREES_VERSION=2.0.23
 
 RUN rm -f /usr/local/etc/php-fpm.d/zz-docker.conf
 
@@ -47,7 +47,7 @@ RUN set -e \
  && rm /tmp/webtrees.zip \
  && cp data/index.php /tmp/
 
-ARG WEBTREES_FANCHART_VERSION=2.2.1
+ARG WEBTREES_FANCHART_VERSION=2.2.2
 
 # Install webtrees fanchart module
 RUN set -e \
