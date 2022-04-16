@@ -6,7 +6,7 @@ ARG ALPINE_VERSION=3.15
 #
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS webtrees-os
 
-COPY --from=mlocati/php-extension-installer:1.5.8 /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=docker.io/mlocati/php-extension-installer:1.5.8 /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN install-php-extensions \
       exif \
@@ -23,7 +23,7 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 #
 # Caddy Builder
 #
-FROM caddy:2.4.6-builder-alpine AS caddy
+FROM docker.io/caddy:2.4.6-builder-alpine AS caddy
 
 RUN xcaddy build --with github.com/baldinof/caddy-supervisor
 
