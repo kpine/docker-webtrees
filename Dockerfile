@@ -6,7 +6,7 @@ ARG ALPINE_VERSION=3.15
 #
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS webtrees-os
 
-COPY --from=docker.io/mlocati/php-extension-installer:1.5.8 /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=docker.io/mlocati/php-extension-installer:1.5.16 /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN install-php-extensions \
       exif \
@@ -23,7 +23,7 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 #
 # Caddy Builder
 #
-FROM docker.io/caddy:2.4.6-builder-alpine AS caddy
+FROM docker.io/caddy:2.5.1-builder-alpine AS caddy
 
 RUN xcaddy build --with github.com/baldinof/caddy-supervisor
 
@@ -36,7 +36,7 @@ COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 
 WORKDIR /srv/webtrees
 
-ARG WEBTREES_VERSION=2.0.23
+ARG WEBTREES_VERSION=2.1.3
 
 RUN rm -f /usr/local/etc/php-fpm.d/zz-docker.conf
 
@@ -47,7 +47,7 @@ RUN set -e \
  && rm /tmp/webtrees.zip \
  && cp data/index.php /tmp/
 
-ARG WEBTREES_FANCHART_VERSION=2.2.2
+ARG WEBTREES_FANCHART_VERSION=2.4.0
 
 # Install webtrees fanchart module
 RUN set -e \
