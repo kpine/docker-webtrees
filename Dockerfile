@@ -37,7 +37,7 @@ COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 
 WORKDIR /srv/webtrees
 
-ARG WEBTREES_VERSION=2.1.4
+ARG WEBTREES_VERSION=2.1.5
 
 RUN rm -f /usr/local/etc/php-fpm.d/zz-docker.conf
 
