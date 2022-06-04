@@ -1,7 +1,7 @@
 {
-  supervisor {
-    php-fpm -F
-  }
+	supervisor {
+		php-fpm -F
+	}
 }
 
 :2015
