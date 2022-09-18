@@ -1,13 +1,13 @@
 ARG PHP_VERSION=7.4
 ARG ALPINE_VERSION=3.16
-ARG CADDY_VERSION=2.5.1
+ARG CADDY_VERSION=2.5.2
 
 #
 # PHP OS Builder
 #
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS webtrees-os
 
-COPY --from=docker.io/mlocati/php-extension-installer:1.5.19 /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=docker.io/mlocati/php-extension-installer:1.5.39 /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN install-php-extensions \
       exif \
@@ -37,7 +37,7 @@ COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 
 WORKDIR /srv/webtrees
 
-ARG WEBTREES_VERSION=2.1.6
+ARG WEBTREES_VERSION=2.1.7
 
 RUN rm -f /usr/local/etc/php-fpm.d/zz-docker.conf
 
