@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
 if [[ -z "$1" ]]; then
-  echo 'release is not set'
+  echo 'version is not set'
   exit 1
 fi
 
-RELEASE="$1"
-echo "$RELEASE"
+WEBTREES_VERSION="$1"
 
-docker buildx build --no-cache --platform linux/amd64 -t kpine/caddy-webtrees:latest -t kpine/caddy-webtrees:"${RELEASE}" --push .
+echo "Building webtrees v$WEBTREES_VERSION"
+
+[[ -z $EARTHLY_PUSH ]] && echo "Set EARTHLY_PUSH=true to push image."
+
+earthly --ci +docker --WEBTREES_VERSION="${RELEASE}"
