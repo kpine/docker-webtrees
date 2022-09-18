@@ -33,21 +33,18 @@ RUN xcaddy build ${CADDY_VERSION} --with github.com/baldinof/caddy-supervisor@v0
 #
 FROM webtrees-os AS webtrees-app
 
-COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
-
 WORKDIR /srv/webtrees
 
 ARG WEBTREES_VERSION=2.1.7
-
-RUN rm -f /usr/local/etc/php-fpm.d/zz-docker.conf
 
 # Install webtrees
 RUN set -e \
  && wget -q https://github.com/fisharebest/webtrees/releases/download/$WEBTREES_VERSION/webtrees-$WEBTREES_VERSION.zip -O /tmp/webtrees.zip \
  && unzip -d /srv -o /tmp/webtrees.zip \
  && rm /tmp/webtrees.zip \
- && cp data/index.php /tmp/
-
+ && chown -R www-data:www-data data \
+ && cp data/index.php /tmp
+ 
 ARG WEBTREES_FANCHART_VERSION=2.4.0
 
 # Install webtrees fanchart module
@@ -56,10 +53,12 @@ RUN set -e \
  && unzip -d /srv/webtrees/modules_v4 -o /tmp/webtrees-fan-chart.zip \
  && rm /tmp/webtrees-fan-chart.zip
 
-RUN chown -R www-data:www-data data
-
+COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 COPY Caddyfile /etc/Caddyfile
 COPY entrypoint.sh /usr/local/bin/
+COPY php-fpm.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+
+RUN caddy validate --config=/etc/Caddyfile
 
 VOLUME /srv/webtrees/data
 EXPOSE 2015
