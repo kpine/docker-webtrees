@@ -62,7 +62,7 @@ docker:
   COPY php-fpm.conf /usr/local/etc/php-fpm.d/zz-docker.conf
   RUN caddy validate --config=/etc/Caddyfile
 
-  ARG VERSION=2.1.7
+  ARG VERSION=2.1.8
   COPY --dir (+webtrees/webtrees --version=$VERSION) /srv
   COPY --dir +fanchart/webtrees-fan-chart /srv/webtrees/modules_v4/
 
