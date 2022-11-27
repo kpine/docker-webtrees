@@ -2,18 +2,18 @@ VERSION 0.6
 
 caddy:
   # Custom version of Caddy with Supervisor plugin
-  FROM docker.io/caddy:2.5.2-builder-alpine
+  FROM docker.io/caddy:2.6.2-builder-alpine
 
   RUN xcaddy build --output /caddy \
         --with github.com/baldinof/caddy-supervisor@v0.6.0
   SAVE ARTIFACT /caddy
 
 php-extension-builder:
-  FROM docker.io/mlocati/php-extension-installer:1.5.39
+  FROM docker.io/mlocati/php-extension-installer:1.5.49
   SAVE ARTIFACT /usr/bin/install-php-extensions /install-php-extensions
 
 build-php:
-  ARG PHP_VERSION=7.4
+  ARG PHP_VERSION=8.1
   ARG ALPINE_VERSION=3.16
   FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION}
 
