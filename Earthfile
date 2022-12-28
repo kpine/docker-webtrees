@@ -9,12 +9,12 @@ caddy:
   SAVE ARTIFACT /caddy
 
 php-extension-builder:
-  FROM docker.io/mlocati/php-extension-installer:1.5.49
+  FROM docker.io/mlocati/php-extension-installer:1.5.52
   SAVE ARTIFACT /usr/bin/install-php-extensions /install-php-extensions
 
 build-php:
-  ARG PHP_VERSION=8.1
-  ARG ALPINE_VERSION=3.16
+  ARG PHP_VERSION=8.2
+  ARG ALPINE_VERSION=3.17
   FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION}
 
   COPY +php-extension-builder/install-php-extensions /usr/local/bin
@@ -45,10 +45,9 @@ webtrees:
 fanchart:
   FROM +build-php
 
-  ARG WEBTREES_FANCHART_VERSION=2.4.0
-
+  ARG version
   RUN set -e \
-   && wget -q https://github.com/magicsunday/webtrees-fan-chart/releases/download/$WEBTREES_FANCHART_VERSION/webtrees-fan-chart.zip -O webtrees-fan-chart.zip \
+   && wget -q https://github.com/magicsunday/webtrees-fan-chart/releases/download/$version/webtrees-fan-chart.zip -O webtrees-fan-chart.zip \
    && unzip -d / -o webtrees-fan-chart.zip
 
   SAVE ARTIFACT /webtrees-fan-chart
@@ -62,9 +61,11 @@ docker:
   COPY php-fpm.conf /usr/local/etc/php-fpm.d/zz-docker.conf
   RUN caddy validate --config=/etc/Caddyfile
 
-  ARG VERSION=2.1.8
+  ARG VERSION=2.1.15
   COPY --dir (+webtrees/webtrees --version=$VERSION) /srv
-  COPY --dir +fanchart/webtrees-fan-chart /srv/webtrees/modules_v4/
+
+  ARG FANCHART_VERSION=2.4.0
+  COPY --dir (+fanchart/webtrees-fan-chart --version=$FANCHART_VERSION) /srv/webtrees/modules_v4/
 
   WORKDIR /srv/webtrees
 
