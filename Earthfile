@@ -86,7 +86,5 @@ docker:
   EXPOSE 2015
   ENTRYPOINT ["entrypoint.sh"]
 
-docker-release:
-  FROM +docker
   ARG REGISTRY=docker.io
   SAVE IMAGE --push $REGISTRY/kpine/caddy-webtrees:latest $REGISTRY/kpine/caddy-webtrees:$VERSION

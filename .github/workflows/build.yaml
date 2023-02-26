@@ -43,8 +43,8 @@ jobs:
 
       - name: Push to Docker Hub
         if: github.event.inputs.push == 'true'
-        run: earthly --ci --push +docker-release
+        run: earthly --ci --push +docker
 
       - name: Push to GitHub Container Registry
         if: github.event.inputs.push == 'true'
-        run: earthly --ci --push +docker-release --REGISTRY=ghcr.io
+        run: earthly --ci --push +docker --REGISTRY=ghcr.io
