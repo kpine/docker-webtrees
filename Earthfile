@@ -64,7 +64,7 @@ docker:
   ARG VERSION=2.1.16
   COPY --dir (+webtrees/webtrees --version=$VERSION) /srv
 
-  ARG FANCHART_VERSION=2.4.0
+  ARG FANCHART_VERSION=2.5.0
   COPY --dir (+fanchart/webtrees-fan-chart --version=$FANCHART_VERSION) /srv/webtrees/modules_v4/
 
   WORKDIR /srv/webtrees
