@@ -1,6 +1,11 @@
-name: Build and Push Test Images
+name: Build and Release Images
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - .arg
   workflow_dispatch:
     inputs:
       push:
@@ -42,9 +47,9 @@ jobs:
         run: earthly --ci +docker
 
       - name: Push to Docker Hub
-        if: github.event.inputs.push == 'true'
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.push == 'true')
         run: earthly --ci --push +docker
 
       - name: Push to GitHub Container Registry
-        if: github.event.inputs.push == 'true'
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.push == 'true')
         run: earthly --ci --push +docker --REGISTRY=ghcr.io
