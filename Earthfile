@@ -9,7 +9,7 @@ caddy:
   SAVE ARTIFACT /caddy
 
 php-extension-builder:
-  FROM docker.io/mlocati/php-extension-installer:1.5.52
+  FROM docker.io/mlocati/php-extension-installer:2.1.61
   SAVE ARTIFACT /usr/bin/install-php-extensions /install-php-extensions
 
 build-php:
