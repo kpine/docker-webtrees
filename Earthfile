@@ -14,7 +14,7 @@ php-extension-builder:
 
 build-php:
   ARG PHP_VERSION=8.2
-  ARG ALPINE_VERSION=3.17
+  ARG ALPINE_VERSION=3.18
   FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION}
 
   COPY +php-extension-builder/install-php-extensions /usr/local/bin
