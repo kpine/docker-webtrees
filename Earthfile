@@ -2,7 +2,7 @@ VERSION 0.7
 
 caddy:
   # Custom version of Caddy with Supervisor plugin
-  FROM docker.io/caddy:2.6.4-builder-alpine
+  FROM docker.io/caddy:2.7.4-builder-alpine
 
   RUN xcaddy build --output /caddy \
         --with github.com/baldinof/caddy-supervisor@v0.6.0
