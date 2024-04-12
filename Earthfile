@@ -1,4 +1,4 @@
-VERSION 0.7
+VERSION 0.8
 
 caddy:
   # Custom version of Caddy with Supervisor plugin
