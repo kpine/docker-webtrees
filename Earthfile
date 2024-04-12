@@ -13,7 +13,7 @@ php-extension-builder:
   SAVE ARTIFACT /usr/bin/install-php-extensions /install-php-extensions
 
 build-php:
-  ARG PHP_VERSION=8.3
+  ARG PHP_VERSION=8.2
   ARG ALPINE_VERSION=3.19
   FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION}
 
