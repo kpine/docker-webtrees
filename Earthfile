@@ -2,19 +2,19 @@ VERSION 0.8
 
 caddy:
   # Custom version of Caddy with Supervisor plugin
-  FROM docker.io/caddy:2.9.1-builder-alpine
+  FROM docker.io/caddy:2.11.7-builder-alpine
 
   RUN xcaddy build --output /caddy \
-        --with github.com/baldinof/caddy-supervisor@v0.6.0
+        --with github.com/baldinof/caddy-supervisor@v0.7.0
   SAVE ARTIFACT /caddy
 
 php-extension-builder:
-  FROM docker.io/mlocati/php-extension-installer:2.7.28
+  FROM docker.io/mlocati/php-extension-installer:2.12.1
   SAVE ARTIFACT /usr/bin/install-php-extensions /install-php-extensions
 
 build-php:
-  ARG PHP_VERSION=8.4
-  ARG ALPINE_VERSION=3.21
+  ARG PHP_VERSION=8.5.11
+  ARG ALPINE_VERSION=3.24
   FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION}
 
   COPY +php-extension-builder/install-php-extensions /usr/local/bin
@@ -64,7 +64,7 @@ docker:
   ARG --required VERSION
   COPY --dir (+webtrees/webtrees --version=$VERSION) /srv
 
-  ARG FANCHART_VERSION=3.0.0
+  ARG FANCHART_VERSION=3.7.1
   COPY --dir (+fanchart/webtrees-fan-chart --version=$FANCHART_VERSION) /srv/webtrees/modules_v4/
 
   WORKDIR /srv/webtrees
