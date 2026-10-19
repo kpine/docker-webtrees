@@ -72,12 +72,12 @@ docker:
   RUN chown -R www-data:www-data data \
    && cp data/index.php /tmp
 
-  ARG EARTHLY_GIT_SHORT_HASH
+  ARG EARTH_GIT_SHORT_HASH
   ARG BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
   LABEL org.opencontainers.image.created=$BUILD_DATE
   LABEL org.opencontainers.image.description="Webtrees online genealogy with Caddy Server"
-  LABEL org.opencontainers.image.revision=$EARTHLY_GIT_SHORT_HASH
+  LABEL org.opencontainers.image.revision=$EARTH_GIT_SHORT_HASH
   LABEL org.opencontainers.image.source="https://github.com/kpine/docker-webtrees"
   LABEL org.opencontainers.image.title="Webtrees"
   LABEL org.opencontainers.image.version=$VERSION
