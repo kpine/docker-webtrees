@@ -48,7 +48,9 @@ fanchart:
   ARG version
   RUN set -e \
    && wget -q https://github.com/magicsunday/webtrees-fan-chart/releases/download/$version/webtrees-fan-chart.zip -O webtrees-fan-chart.zip \
-   && unzip -d / -o webtrees-fan-chart.zip
+   && unzip -o webtrees-fan-chart.zip -d /webtrees-fan-chart \
+   && cd /webtrees-fan-chart \
+   && rm -rf .githooks dev jsconfig.json
 
   SAVE ARTIFACT /webtrees-fan-chart
 
