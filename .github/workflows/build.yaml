@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - .arg
+  pull_request:
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
       push:
