@@ -2,19 +2,19 @@ VERSION 0.8
 
 caddy:
   # Custom version of Caddy with Supervisor plugin
-  FROM docker.io/caddy:2.9.1-builder-alpine
+  FROM docker.io/caddy:2.11.7-builder-alpine
 
   RUN xcaddy build --output /caddy \
-        --with github.com/baldinof/caddy-supervisor@v0.6.0
+        --with github.com/baldinof/caddy-supervisor@v0.7.0
   SAVE ARTIFACT /caddy
 
 php-extension-builder:
-  FROM docker.io/mlocati/php-extension-installer:2.7.28
+  FROM docker.io/mlocati/php-extension-installer:2.12.1
   SAVE ARTIFACT /usr/bin/install-php-extensions /install-php-extensions
 
 build-php:
-  ARG PHP_VERSION=8.4
-  ARG ALPINE_VERSION=3.21
+  ARG PHP_VERSION=8.5.11
+  ARG ALPINE_VERSION=3.24
   FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION}
 
   COPY +php-extension-builder/install-php-extensions /usr/local/bin
@@ -48,7 +48,9 @@ fanchart:
   ARG version
   RUN set -e \
    && wget -q https://github.com/magicsunday/webtrees-fan-chart/releases/download/$version/webtrees-fan-chart.zip -O webtrees-fan-chart.zip \
-   && unzip -d / -o webtrees-fan-chart.zip
+   && unzip -o webtrees-fan-chart.zip -d /webtrees-fan-chart \
+   && cd /webtrees-fan-chart \
+   && rm -rf .githooks dev jsconfig.json
 
   SAVE ARTIFACT /webtrees-fan-chart
 
@@ -64,7 +66,7 @@ docker:
   ARG --required VERSION
   COPY --dir (+webtrees/webtrees --version=$VERSION) /srv
 
-  ARG FANCHART_VERSION=3.0.0
+  ARG FANCHART_VERSION=3.7.1
   COPY --dir (+fanchart/webtrees-fan-chart --version=$FANCHART_VERSION) /srv/webtrees/modules_v4/
 
   WORKDIR /srv/webtrees
@@ -72,12 +74,12 @@ docker:
   RUN chown -R www-data:www-data data \
    && cp data/index.php /tmp
 
-  ARG EARTHLY_GIT_SHORT_HASH
+  ARG EARTH_GIT_SHORT_HASH
   ARG BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
   LABEL org.opencontainers.image.created=$BUILD_DATE
   LABEL org.opencontainers.image.description="Webtrees online genealogy with Caddy Server"
-  LABEL org.opencontainers.image.revision=$EARTHLY_GIT_SHORT_HASH
+  LABEL org.opencontainers.image.revision=$EARTH_GIT_SHORT_HASH
   LABEL org.opencontainers.image.source="https://github.com/kpine/docker-webtrees"
   LABEL org.opencontainers.image.title="Webtrees"
   LABEL org.opencontainers.image.version=$VERSION
