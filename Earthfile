@@ -9,11 +9,11 @@ caddy:
   SAVE ARTIFACT /caddy
 
 php-extension-builder:
-  FROM docker.io/mlocati/php-extension-installer:2.12.1
+  FROM docker.io/mlocati/php-extension-installer:2.12.3
   SAVE ARTIFACT /usr/bin/install-php-extensions /install-php-extensions
 
 build-php:
-  ARG PHP_VERSION=8.5.11
+  ARG PHP_VERSION=8.5.12
   ARG ALPINE_VERSION=3.24
   FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION}
 
