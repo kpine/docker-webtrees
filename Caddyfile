@@ -1,13 +1,13 @@
 {
 	supervisor {
-		php-fpm
+		/bin/php-fpm --fpm-config /etc/php-fpm.conf
 	}
 }
 
 :2015
 
 root * /srv/webtrees
-php_fastcgi unix//var/run/php-fpm.sock
+php_fastcgi unix//run/php-fpm.sock
 file_server /public/*
 encode gzip
 

@@ -1,0 +1,159 @@
+{
+  description = "Webtrees online genealogy with Caddy Server";
+
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+  outputs =
+    { self, nixpkgs }:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+      inherit (pkgs) lib;
+
+      version = "2.2.6";
+      fanchartVersion = "3.7.1";
+
+      # UID/GID the container runs as; www-data in the earlier Alpine-based images
+      uid = "82";
+
+      # Custom version of Caddy with Supervisor plugin
+      caddy = pkgs.caddy.withPlugins {
+        plugins = [ "github.com/baldinof/caddy-supervisor@v0.7.0" ];
+        hash = "sha256-gz7+rL6kef52DBj9LV111azr/nUjGeQo3BdF1rgCHXw=";
+      };
+
+      php = pkgs.php85.buildEnv {
+        extensions =
+          { enabled, all }:
+          enabled
+          ++ (with all; [
+            exif
+            gd
+            intl
+            pdo_mysql
+            pdo_pgsql
+            zip
+          ]);
+      };
+
+      webtrees = pkgs.stdenvNoCC.mkDerivation {
+        pname = "webtrees";
+        inherit version;
+
+        src = pkgs.fetchzip {
+          url = "https://github.com/fisharebest/webtrees/releases/download/${version}/webtrees-${version}.zip";
+          hash = "sha256-9DI86LOADdaEbwR3L/3/xuXvrSL96DYAkNdzpQ7b9OU=";
+        };
+
+        installPhase = ''
+          cp -r . $out
+        '';
+      };
+
+      webtrees-fan-chart = pkgs.stdenvNoCC.mkDerivation {
+        pname = "webtrees-fan-chart";
+        version = fanchartVersion;
+
+        src = pkgs.fetchzip {
+          url = "https://github.com/magicsunday/webtrees-fan-chart/releases/download/${fanchartVersion}/webtrees-fan-chart.zip";
+          hash = "sha256-pmNnA+/LQI9qQmpz7YP3epRDq1UTd7kyYMQQhGqOziY=";
+          stripRoot = false;
+        };
+
+        installPhase = ''
+          # FIXME: https://github.com/magicsunday/webtrees-fan-chart/issues/341
+          rm -rf .githooks dev jsconfig.json
+          cp -r . $out
+        '';
+      };
+
+      # Installed into modules_v4, each in a directory named after its pname
+      webtreesModules = [ webtrees-fan-chart ];
+
+      # Convert the flake's last-modified timestamp (YYYYMMDDHHMMSS) to RFC 3339
+      created =
+        let
+          d = self.lastModifiedDate;
+          s = start: len: builtins.substring start len d;
+        in
+        "${s 0 4}-${s 4 2}-${s 6 2}T${s 8 2}:${s 10 2}:${s 12 2}Z";
+
+      docker = pkgs.dockerTools.streamLayeredImage {
+        name = "ghcr.io/kpine/caddy-webtrees";
+        tag = version;
+        inherit created;
+        maxLayers = 10;
+
+        contents = [
+          pkgs.dockerTools.fakeNss
+          pkgs.dockerTools.caCertificates
+          pkgs.busybox
+          caddy
+          php
+        ];
+
+        fakeRootCommands = ''
+          mkdir -p tmp run srv var/lib/caddy
+          chmod 1777 tmp
+          chown ${uid}:${uid} run var/lib/caddy
+
+          cp ${./Caddyfile} etc/Caddyfile
+          cp ${./php-fpm.conf} etc/php-fpm.conf
+
+          cp -r ${webtrees} srv/webtrees
+          ${lib.concatMapStrings (m: ''
+            cp -r ${m} srv/webtrees/modules_v4/${m.pname}
+          '') webtreesModules}
+          chmod -R u+w srv/webtrees
+          chown -R ${uid}:${uid} srv/webtrees/data
+        '';
+
+        config = {
+          User = "${uid}:${uid}";
+          Entrypoint = [
+            "/bin/caddy"
+            "run"
+            "--config"
+            "/etc/Caddyfile"
+          ];
+          WorkingDir = "/srv/webtrees";
+          Volumes."/srv/webtrees/data" = { };
+          ExposedPorts."2015/tcp" = { };
+          Env = [
+            # Use the default production configuration
+            "PHPRC=${php.unwrapped}/etc"
+            "HOME=/var/lib/caddy"
+          ];
+          Labels = {
+            "org.opencontainers.image.created" = created;
+            "org.opencontainers.image.description" = "Webtrees online genealogy with Caddy Server";
+            "org.opencontainers.image.revision" = self.shortRev or self.dirtyShortRev or "unknown";
+            "org.opencontainers.image.source" = "https://github.com/kpine/docker-webtrees";
+            "org.opencontainers.image.title" = "Webtrees";
+            "org.opencontainers.image.version" = version;
+          };
+        };
+      };
+    in
+    {
+      packages.${system} = {
+        inherit
+          caddy
+          php
+          webtrees
+          webtrees-fan-chart
+          docker
+          ;
+        default = docker;
+      };
+
+      checks.${system}.caddyfile =
+        pkgs.runCommand "caddyfile-validate" { nativeBuildInputs = [ caddy ]; }
+          ''
+            HOME=$TMPDIR caddy validate --config ${./Caddyfile} --adapter caddyfile
+            touch $out
+          '';
+
+      formatter.${system} = pkgs.nixfmt;
+    };
+}
