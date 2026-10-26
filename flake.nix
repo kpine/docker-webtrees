@@ -40,9 +40,13 @@
             zip
             zlib
           ]);
-        # The webtrees code is fixed in the image, so never check for changed files
         extraConfig = ''
+          ; The webtrees code is fixed in the image, so never check for changed files
           opcache.validate_timestamps = 0
+
+          ; Allow uploading full-size photos (PHP defaults are 2M and 8M)
+          upload_max_filesize = 32M
+          post_max_size = 64M
         '';
       };
 
