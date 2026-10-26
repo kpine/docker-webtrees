@@ -137,12 +137,17 @@
         default = docker;
       };
 
-      checks.${system}.caddyfile =
-        pkgs.runCommand "caddyfile-validate" { nativeBuildInputs = [ caddy ]; }
-          ''
-            HOME=$TMPDIR caddy validate --config ${./Caddyfile} --adapter caddyfile
-            touch $out
-          '';
+      checks.${system} = {
+        caddyfile = pkgs.runCommand "caddyfile-validate" { nativeBuildInputs = [ caddy ]; } ''
+          HOME=$TMPDIR caddy validate --config ${./Caddyfile} --adapter caddyfile
+          touch $out
+        '';
+
+        php-fpm-conf = pkgs.runCommand "php-fpm-conf-validate" { nativeBuildInputs = [ php ]; } ''
+          php-fpm --test --fpm-config ${./php-fpm.conf}
+          touch $out
+        '';
+      };
 
       formatter.${system} = pkgs.nixfmt;
     };
