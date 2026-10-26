@@ -8,10 +8,8 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      inherit (pkgs) lib;
 
       version = "2.2.6";
-      fanchartVersion = "3.7.1";
 
       # UID/GID the container runs as; www-data in the earlier Alpine-based images
       uid = "82";
@@ -54,26 +52,6 @@
         '';
       };
 
-      webtrees-fan-chart = pkgs.stdenvNoCC.mkDerivation {
-        pname = "webtrees-fan-chart";
-        version = fanchartVersion;
-
-        src = pkgs.fetchzip {
-          url = "https://github.com/magicsunday/webtrees-fan-chart/releases/download/${fanchartVersion}/webtrees-fan-chart.zip";
-          hash = "sha256-pmNnA+/LQI9qQmpz7YP3epRDq1UTd7kyYMQQhGqOziY=";
-          stripRoot = false;
-        };
-
-        installPhase = ''
-          # FIXME: https://github.com/magicsunday/webtrees-fan-chart/issues/341
-          rm -rf .githooks dev jsconfig.json
-          cp -r . $out
-        '';
-      };
-
-      # Installed into modules_v4, each in a directory named after its pname
-      webtreesModules = [ webtrees-fan-chart ];
-
       # Convert the flake's last-modified timestamp (YYYYMMDDHHMMSS) to RFC 3339
       created =
         let
@@ -105,9 +83,6 @@
           cp ${./php-fpm.conf} etc/php-fpm.conf
 
           cp -r ${webtrees} srv/webtrees
-          ${lib.concatMapStrings (m: ''
-            cp -r ${m} srv/webtrees/modules_v4/${m.pname}
-          '') webtreesModules}
           chmod -R u+w srv/webtrees
           chown -R ${uid}:${uid} srv/webtrees/data
         '';
@@ -145,7 +120,6 @@
           caddy
           php
           webtrees
-          webtrees-fan-chart
           docker
           ;
         default = docker;

@@ -19,9 +19,9 @@ docker push ghcr.io/kpine/caddy-webtrees:2.2.6
 
 ## Build a different version of webtrees
 
-The webtrees and fan chart module versions are set in `flake.nix`, alongside the
-hashes of their release archives. To change a version, update `version` (or
-`fanchartVersion`) and the matching `hash`. Get the new hash with:
+The webtrees version is set in `flake.nix`, alongside the hash of its release
+archive. To change it, update `version` and the matching `hash`. Get the new hash
+with:
 
 ```shell
 nix store prefetch-file --unpack https://github.com/fisharebest/webtrees/releases/download/<version>/webtrees-<version>.zip
