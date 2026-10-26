@@ -24,13 +24,21 @@
         extensions =
           { enabled, all }:
           enabled
+          # Required and recommended by webtrees; json, pcre and xml are built into PHP
           ++ (with all; [
+            ctype
+            curl
             exif
+            fileinfo
             gd
+            iconv
             intl
+            mbstring
+            pdo
             pdo_mysql
-            pdo_pgsql
+            session
             zip
+            zlib
           ]);
         # The webtrees code is fixed in the image, so never check for changed files
         extraConfig = ''
