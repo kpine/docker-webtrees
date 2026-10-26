@@ -34,6 +34,10 @@
             pdo_pgsql
             zip
           ]);
+        # The webtrees code is fixed in the image, so never check for changed files
+        extraConfig = ''
+          opcache.validate_timestamps = 0
+        '';
       };
 
       webtrees = pkgs.stdenvNoCC.mkDerivation {
