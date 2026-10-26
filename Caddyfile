@@ -8,13 +8,19 @@
 
 root * /srv/webtrees
 php_fastcgi unix//run/php-fpm.sock
-file_server /public/*
 encode gzip
+
+@static {
+	path /public/*
+	path /favicon.ico
+	path /apple-touch-icon.png
+}
+file_server @static
 
 @forbidden {
 	path /app/*
 	path /data/*
-	path /modules/*
+	path /modules_v4/*
 	path /resources/*
 	path /vendor/*
 }
