@@ -11,7 +11,7 @@
 
       version = "2.2.6";
 
-      # UID/GID the container runs as; www-data in the earlier Alpine-based images
+      # UID/GID the container runs as; www-data in the previous Alpine-based image
       uid = "82";
 
       # Custom version of Caddy with Supervisor plugin
@@ -71,9 +71,14 @@
       created =
         let
           d = self.lastModifiedDate;
-          s = start: len: builtins.substring start len d;
+          year = builtins.substring 0 4 d;
+          month = builtins.substring 4 2 d;
+          day = builtins.substring 6 2 d;
+          hour = builtins.substring 8 2 d;
+          minute = builtins.substring 10 2 d;
+          second = builtins.substring 12 2 d;
         in
-        "${s 0 4}-${s 4 2}-${s 6 2}T${s 8 2}:${s 10 2}:${s 12 2}Z";
+        "${year}-${month}-${day}T${hour}:${minute}:${second}Z";
 
       docker = pkgs.dockerTools.streamLayeredImage {
         name = "ghcr.io/kpine/caddy-webtrees";
