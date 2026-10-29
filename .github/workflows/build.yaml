@@ -40,7 +40,10 @@ jobs:
           persist-credentials: false
 
       - name: Check flake
-        run: nix flake check
+        run: nix flake check --print-build-logs
+
+      - name: Run formatter
+        run: nix fmt -- --ci --verbose
 
       - name: Build image
         run: |
