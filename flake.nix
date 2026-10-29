@@ -47,6 +47,9 @@
           ; Allow uploading full-size photos (PHP defaults are 2M and 8M)
           upload_max_filesize = 32M
           post_max_size = 64M
+
+          ; Headroom for large GEDCOM imports and exports (PHP default is 128M)
+          memory_limit = 256M
         '';
       };
 
