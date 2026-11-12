@@ -17,7 +17,7 @@
       # Custom version of Caddy with Supervisor plugin
       caddy = pkgs.caddy.withPlugins {
         plugins = [ "github.com/baldinof/caddy-supervisor@v0.7.0" ];
-        hash = "sha256-gz7+rL6kef52DBj9LV111azr/nUjGeQo3BdF1rgCHXw=";
+        hash = "sha256-9BdHFsUDG5RyH8edX7bCD+ppaCWpEmpMIJ79ROZqVYI";
       };
 
       php = pkgs.php85.buildEnv {
